@@ -26,22 +26,121 @@
 	</head>
 	<body>
 		<div class="reveal">
-			<div class="slides">
-				<section>
-					<h1>Processor Defense</h1>
-					<h3>Design and Implementation of the 5 stage MIPS Pipeline</h3>
-					<p>
-						<small>Author: George Bernard</small>
-					</p>
-				</section>
+		<div class="slides">
+		<!--Title Slide-->
+		<section>
+			<h1>Processor Defense</h1>
+			<h3>Design and Implementation of the 5 stage MIPS Pipeline</h3>
+			<p>
+				<small>Author: George Bernard</small>
+			</p>
+		</section>
 
-				<!--Design Section-->
-				<section>
-					<section>
-						<h1>High Level Design</h1>	
-					</section>
-					
-				</section>>
+		<!--Design Section-->
+		<section data-markdown>
+			# Construction
+		</section>
+		<section>	
+				<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow">
+		</section>
+		<section>
+				<section data-markdown>
+					## Fetch
+					+ PC
+					+ Adder
+					+ Select (MUX)
+					+ Instruction memory
+				</section>
+				
+				<section data-markdown>
+					## Decode
+					+ Decoder
+						+ Splitter
+						+ SOP Logic
+					+ Regfile
+						+ Front Door
+						+ Back door
+					+ Stall Control
+					+ Bypass Control
+					+ Exception Control
+				</section>
+				
+				<section data-markdown>
+					## Execute
+					+ ALU
+					+ Mult-Div
+					+ Branch Target Calculation
+				</section>
+				
+				<section data-markdown>
+					## Memory
+					+ Data Memory
+					+ Commit to branches/jumps
+				</section>
+				
+				<section data-markdown>
+					## Writeback
+					+ Write Select
+					+ Control ove
+				</section>			
+		</section>
+		<section>
+			<section data-markdown>
+			## Propogation of control
+			+ Control registers between every stage
+			+ Stalls are driven from F/D onward
+			+ Bypassing driven through control unit
+				+ In decode on a technicality
+			</section>
+			<section>
+				<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Up arrow">
+			</section>
+		</section>
+		<section data-markdown>
+			## Reverse Dependencies
+			+ Minimize explicit dependencies backward
+			+ Writeback drives regfile 
+			+ Exceptions in execute drive exception control
+		</section>
+
+
+		<!--Implementation Section-->
+		<section data-markdown>
+			# Implementation
+		</section>
+		<section data-markdown>
+			## Timing
+			+ Critical Path: One cycle of multdiv
+			+ Stalling: Register dependency with Data Memory
+			+ Bypassing: All other data hazards
+			+ Main Heuristic:
+				+ Minimize extending the critical path of any stage
+				+ Even at hardware cost
+		</section>
+		<section data-markdown>
+			## Hardware
+			+ KG - Adder
+				+ Expensive but fast
+				+ 1 in Fetch, 5 in execute (Branch, ALU, MulDiv)
+			+ Many interstage registers minimizes rederiving logic.
+		</section>
+		
+		<!--Integration Section-->
+		<section>
+			<section data-markdown>
+				## Clocking
+				+ Stages are normal clock
+				+ PC incremented every positive edge
+				+ Inter staged NOT clock
+				+ Pro: 
+					+ Prevents metastability by dovetailing result latching
+			</section>
+			<section data-markdown>
+				## Jump / Branch
+				+ Need these to be committed at the same time
+				+ if not then early jump could happen before branch commit
+			</section>
+		</section>
 
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
